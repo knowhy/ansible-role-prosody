@@ -1,0 +1,25 @@
+---
+prosody_pkgs:
+   - prosody
+   - lua-dbi-mysql
+prosody_nonssl_port: 5222
+prosody_ssl_port: 5223
+prosody_mysql_password: secret
+prosody_users:
+   bot:
+     name: bot
+     domain: "{{ prosody_domain }}"
+     password: bot
+   test:
+     name: test
+     domain: "{{ prosody_domain }}"
+     password: test
+prosody_domain: localhost
+ssl_certs_privkey_path: "/etc/prosody/certs/{{ prosody_domain }}.key"
+ssl_certs_key_size: 2048
+ssl_certs_fields: "/C=DE/ST=Berlin/L=Berlin/O=org/CN={{ prosody_domain }}"
+ssl_certs_csr_path: "/etc/prosody/certs/{{ prosody_domain }}.csr"
+ssl_certs_cert_path: "/etc/prosody/certs/{{ prosody_domain }}.crt"
+ssl_certs_days: 365
+
+mysql_root_password: secret

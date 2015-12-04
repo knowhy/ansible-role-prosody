@@ -1,0 +1,83 @@
+---
+- name: Install mariadb and related packages.
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+  become: true
+
+- name: Start sql service and enable the service.
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: true
+
+- name: Set MariaDB root password.
+  mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: localhost
+    login_user: root
+    login_password: ""
+  become: true
+
+- name: Delete anonymous sql server user for "{{ prosody_domain }}".
+  mysql_user:
+    user: ""
+    host: localhost
+    state: "absent"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Delete anonymous sql server user for localhost.
+  mysql_user:
+    user: ""
+    state: "absent"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Secure the sql root user for ipv6 localhost (::1).
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_password }}"
+    host: "::1"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Secure the sql root user for ipv4 localhost (127.0.0.1).
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_password }}"
+    host: "127.0.0.1"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Secure the sql root user for localhost domain (localhost).
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_password }}"
+    host: "localhost"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Remove the mysql test database
+  mysql_db:
+    db: test
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: true
+
+- name: Create my.cnf for root user.
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+  become: true

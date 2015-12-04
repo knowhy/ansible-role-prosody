@@ -1,0 +1,19 @@
+- name: start ejabberd
+  service:
+    name: prosody
+    state: started
+  sudo: true
+
+- name: restart ejabberd
+  service:
+    name: prosody
+    state: restarted
+  sudo: true
+
+- name: save iptables
+  command: iptables-save
+  sudo: true
+ 
+- name: restart iptables
+  service: name=ufw state=restarted
+  sudo: true

@@ -1,0 +1,6 @@
+---
+- hosts: default
+  roles:
+     - mariadb
+     - prosody
+     - send-client

@@ -1,0 +1,33 @@
+---
+- name: Install pip and dnspython.
+  apt:
+    name: python-pip
+    state: present
+  sudo: true
+
+- name: Install python-dnspython.
+  apt:
+    name: python-dnspython
+    state: present
+  sudo: true
+
+- name: Install dependencies for sleekxmpp.
+  pip: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+   - sleekxmpp
+
+- name: Install test send-client.
+  template:
+    src: send-client.py.j2
+    dest: /usr/local/bin/send-client.py
+    mode: 770
+  sudo: true
+    
+- name: Install test echo-bot.
+  template:
+    src: echo-bot.py.j2
+    dest: /usr/local/bin/echo-bot.py
+    mode: 770
+  sudo: true
